@@ -44,7 +44,7 @@ function addToCluster(value) {
         }
         foundCluster.push(value);
         clustersMapping[value] = foundCluster;
-        console.log(clustersMapping)
+        rebuildCluster(foundCluster)
     }
 
     return foundCluster;
@@ -64,12 +64,10 @@ function removeFromCluster(value) {
     return foundCluster;
 }
 
+function rebuildCluster(cluster){
+    cluster.sort(function(a,b){return a-b})
+}
+
 addToCluster(valueToAdd)
-addToCluster(82)
-addToCluster(62)
-addToCluster(83)
-addToCluster(58)
-addToCluster(12)
-addToCluster(62)
-removeFromCluster(62)
+
 
