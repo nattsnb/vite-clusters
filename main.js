@@ -21,7 +21,6 @@ const valueToAdd = 13;
 function findClusterForValue(value) {
   let foundCluster = null;
   let searchValue = value - absolutDistance;
-
   while (!foundCluster) {
     if (clustersMapping[searchValue]) {
       foundCluster = clustersMapping[searchValue];
@@ -36,34 +35,35 @@ function findClusterForValue(value) {
 }
 
 function addToCluster(value) {
-  const foundCluster = findClusterForValue(value);
-
-  if (foundCluster) {
-    if (foundCluster.includes(value)) {
-      return "value already in cluster";
+  if(!isNaN(value)){
+    const foundCluster = findClusterForValue(value);
+    if (foundCluster) {
+      if (foundCluster.includes(value)) {
+        return "value already in cluster";
+      }
+      foundCluster.push(value);
+      clustersMapping[value] = foundCluster;
+      rebuildCluster(foundCluster);
+    } else {
+      addNewCluster(value);
     }
-    foundCluster.push(value);
-    clustersMapping[value] = foundCluster;
-    rebuildCluster(foundCluster);
-  } else {
-    addNewCluster(value);
-    console.log(clustersMapping);
-  }
 
-  return foundCluster;
+    return foundCluster;
+  }
 }
 
 function removeFromCluster(value) {
-  const foundCluster = findClusterForValue(value);
-
-  if (foundCluster) {
-    const indexOfValueInCluster = foundCluster.indexOf(value);
-    foundCluster.splice(indexOfValueInCluster, 1);
-    delete clustersMapping[value];
-  } else {
-    return "no such value in clusters";
+  if(!isNaN(value)){
+    const foundCluster = findClusterForValue(value);
+    if (foundCluster) {
+      const indexOfValueInCluster = foundCluster.indexOf(value);
+      foundCluster.splice(indexOfValueInCluster, 1);
+      delete clustersMapping[value];
+    } else {
+      return "no such value in clusters";
+    }
+    return foundCluster;
   }
-  return foundCluster;
 }
 
 function rebuildCluster(cluster) {
@@ -77,10 +77,6 @@ function addNewCluster(value) {
   clusters.push(newCluster);
   const indexOfCluster = clusters.indexOf(newCluster);
   clustersMapping[value] = clusters[indexOfCluster];
+  return newCluster
 }
 
-addToCluster(valueToAdd);
-addToCluster(14);
-addToCluster(82);
-addToCluster(84);
-removeFromCluster(82);
