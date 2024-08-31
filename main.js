@@ -80,3 +80,31 @@ function addNewCluster(value) {
   return newCluster
 }
 
+function findInClusters(value){
+  if (clustersMapping[value]) {
+    return clustersMapping[value];
+  } else {
+    return null
+  }
+}
+
+
+//TESTING
+console.log(clusters)
+addToCluster(13)
+addToCluster(68)
+addToCluster(111)
+console.log(clusters)
+addToCluster(65)
+console.log(findInClusters(13))
+removeFromCluster(11)
+addToCluster(22)
+removeFromCluster(111)
+console.log(clusters)
+console.log(findInClusters(60))
+console.log(findInClusters(111))
+console.log(clustersMapping)
+addToCluster(69)
+removeFromCluster(65)
+console.log(clusters)
+
