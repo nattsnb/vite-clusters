@@ -14,9 +14,7 @@ const clustersMapping = {
   62: clusters[1],
 };
 
-// add element with value 13
 const absolutDistance = 5;
-const valueToAdd = 13;
 
 function findClusterForValue(value) {
   let foundCluster = null;
@@ -31,51 +29,49 @@ function findClusterForValue(value) {
       break;
     }
   }
-  combineClustersIfNeeded(value)
-  deleteEmptyClusters()
   return foundCluster;
 }
 
-function deleteEmptyClusters(){
-  for (let i = 0; i < clusters.length; i ++) {
+function deleteEmptyClusters() {
+  for (let i = 0; i < clusters.length; i++) {
     if (clusters[i].length === 0) {
-      clusters.splice(i,1)
+      clusters.splice(i, 1);
     }
   }
 }
 
 function combineClustersIfNeeded(value) {
   const allNumbersArray = clusters.flat();
-  let i = -5
-  let pickedNumbersArray = []
-  while (i<5) {
+  let i = -5;
+  let pickedNumbersArray = [];
+  while (i < 5) {
     let numberToLookFor = value + i;
-    for (const element of allNumbersArray){
+    for (const element of allNumbersArray) {
       if (element === numberToLookFor) {
-        pickedNumbersArray.push(element)
+        pickedNumbersArray.push(element);
       }
     }
-    i++
+    i++;
   }
-  let arrayOfClusters = []
+  let arrayOfClusters = [];
   for (const element of pickedNumbersArray) {
-    const cluster = clustersMapping[element]
-    arrayOfClusters.push(cluster)
+    const cluster = clustersMapping[element];
+    arrayOfClusters.push(cluster);
   }
-  const noDuplicatesArray = [...new Set (arrayOfClusters)]
-  const combinedCluster = noDuplicatesArray.flat()
+  const noDuplicatesArray = [...new Set(arrayOfClusters)];
+  const combinedCluster = noDuplicatesArray.flat();
   for (const element of noDuplicatesArray) {
-    const index = clusters.indexOf(element)
-    clusters.splice(index,1)
+    const index = clusters.indexOf(element);
+    clusters.splice(index, 1);
   }
   for (const element of combinedCluster) {
-    clustersMapping[element] = combinedCluster
+    clustersMapping[element] = combinedCluster;
   }
-  clusters.push(combinedCluster)
+  clusters.push(combinedCluster);
 }
 
 function addToCluster(value) {
-  if(!isNaN(value)){
+  if (!isNaN(value)) {
     const foundCluster = findClusterForValue(value);
     if (foundCluster) {
       if (foundCluster.includes(value)) {
@@ -87,22 +83,44 @@ function addToCluster(value) {
     } else {
       addNewCluster(value);
     }
+    combineClustersIfNeeded(value);
+    deleteEmptyClusters();
     return foundCluster;
   }
 }
 
-
 function removeFromCluster(value) {
-  if(!isNaN(value)){
+  if (!isNaN(value)) {
     const foundCluster = findClusterForValue(value);
     if (foundCluster) {
       const indexOfValueInCluster = foundCluster.indexOf(value);
       foundCluster.splice(indexOfValueInCluster, 1);
       delete clustersMapping[value];
+      divideClusterIfNeeded(indexOfValueInCluster, foundCluster);
     } else {
       return "no such value in clusters";
     }
+    deleteEmptyClusters();
     return foundCluster;
+  }
+}
+
+function divideClusterIfNeeded(indexOfDeletedItem, cluster) {
+  const beforeDeletedItem = cluster[indexOfDeletedItem - 1];
+  const afterDeletedItem = cluster[indexOfDeletedItem];
+  const distanceBetweenItems = afterDeletedItem - beforeDeletedItem;
+  console.log(distanceBetweenItems);
+  if (distanceBetweenItems > absolutDistance) {
+    const newCluster = cluster.slice(indexOfDeletedItem);
+    cluster.splice(indexOfDeletedItem);
+    console.log(cluster);
+    for (const element of cluster) {
+      clustersMapping[element] = cluster;
+    }
+    for (const element of newCluster) {
+      clustersMapping[element] = newCluster;
+    }
+    clusters.push(newCluster);
   }
 }
 
@@ -117,41 +135,38 @@ function addNewCluster(value) {
   clusters.push(newCluster);
   const indexOfCluster = clusters.indexOf(newCluster);
   clustersMapping[value] = clusters[indexOfCluster];
-  return newCluster
+  return newCluster;
 }
 
-function findInClusters(value){
+function findInWhichCluster(value) {
   if (clustersMapping[value]) {
     return clustersMapping[value];
   } else {
-    return null
+    return null;
   }
 }
 
-function rebuildMap(value, foundCluster){
-  const index = clusters.findIndex(foundCluster)
-  const otherClusters = clusters.splice(index, 1)
-
+function rebuildMap(value, foundCluster) {
+  const index = clusters.findIndex(foundCluster);
+  const otherClusters = clusters.splice(index, 1);
 }
 
-
 //TESTING
-console.log(clusters)
-addToCluster(13)
-addToCluster(68)
-addToCluster(111)
-console.log(clusters)
-addToCluster(65)
-// console.log(findInClusters(13))
-// removeFromCluster(11)
-// addToCluster(22)
-// removeFromCluster(111)
-// console.log(clusters)
-// console.log(findInClusters(60))
-// console.log(findInClusters(111))
-// console.log(clustersMapping)
-// addToCluster(69)
-// removeFromCluster(65)
-console.log(clustersMapping)
-console.log(clusters)
-
+console.log(clusters);
+addToCluster(13);
+addToCluster(69);
+addToCluster(111);
+console.log(clusters);
+addToCluster(65);
+console.log(findInWhichCluster(13))
+removeFromCluster(11)
+addToCluster(22)
+removeFromCluster(111)
+console.log(clusters);
+console.log(findInWhichCluster(60));
+console.log(findInWhichCluster(111));
+console.log(clustersMapping);
+addToCluster(70);
+removeFromCluster(65);
+console.log(clustersMapping);
+console.log(clusters);
