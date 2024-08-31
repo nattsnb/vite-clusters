@@ -31,7 +31,47 @@ function findClusterForValue(value) {
       break;
     }
   }
+  combineClustersIfNeeded(value)
+  deleteEmptyClusters()
   return foundCluster;
+}
+
+function deleteEmptyClusters(){
+  for (let i = 0; i < clusters.length; i ++) {
+    if (clusters[i].length === 0) {
+      clusters.splice(i,1)
+    }
+  }
+}
+
+function combineClustersIfNeeded(value) {
+  const allNumbersArray = clusters.flat();
+  let i = -5
+  let pickedNumbersArray = []
+  while (i<5) {
+    let numberToLookFor = value + i;
+    for (const element of allNumbersArray){
+      if (element === numberToLookFor) {
+        pickedNumbersArray.push(element)
+      }
+    }
+    i++
+  }
+  let arrayOfClusters = []
+  for (const element of pickedNumbersArray) {
+    const cluster = clustersMapping[element]
+    arrayOfClusters.push(cluster)
+  }
+  const noDuplicatesArray = [...new Set (arrayOfClusters)]
+  const combinedCluster = noDuplicatesArray.flat()
+  for (const element of noDuplicatesArray) {
+    const index = clusters.indexOf(element)
+    clusters.splice(index,1)
+  }
+  for (const element of combinedCluster) {
+    clustersMapping[element] = combinedCluster
+  }
+  clusters.push(combinedCluster)
 }
 
 function addToCluster(value) {
@@ -47,10 +87,10 @@ function addToCluster(value) {
     } else {
       addNewCluster(value);
     }
-
     return foundCluster;
   }
 }
+
 
 function removeFromCluster(value) {
   if(!isNaN(value)){
@@ -88,6 +128,12 @@ function findInClusters(value){
   }
 }
 
+function rebuildMap(value, foundCluster){
+  const index = clusters.findIndex(foundCluster)
+  const otherClusters = clusters.splice(index, 1)
+
+}
+
 
 //TESTING
 console.log(clusters)
@@ -96,15 +142,16 @@ addToCluster(68)
 addToCluster(111)
 console.log(clusters)
 addToCluster(65)
-console.log(findInClusters(13))
-removeFromCluster(11)
-addToCluster(22)
-removeFromCluster(111)
-console.log(clusters)
-console.log(findInClusters(60))
-console.log(findInClusters(111))
+// console.log(findInClusters(13))
+// removeFromCluster(11)
+// addToCluster(22)
+// removeFromCluster(111)
+// console.log(clusters)
+// console.log(findInClusters(60))
+// console.log(findInClusters(111))
+// console.log(clustersMapping)
+// addToCluster(69)
+// removeFromCluster(65)
 console.log(clustersMapping)
-addToCluster(69)
-removeFromCluster(65)
 console.log(clusters)
 
