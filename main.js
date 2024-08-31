@@ -25,7 +25,7 @@ function findClusterForValue(value) {
     } else {
       searchValue++;
     }
-    if (searchValue > value + 5) {
+    if (searchValue > value + absolutDistance) {
       break;
     }
   }
@@ -42,9 +42,9 @@ function deleteEmptyClusters() {
 
 function combineClustersIfNeeded(value) {
   const allNumbersArray = clusters.flat();
-  let i = -5;
+  let i = -absolutDistance;
   let pickedNumbersArray = [];
-  while (i < 5) {
+  while (i < absolutDistance) {
     let numberToLookFor = value + i;
     for (const element of allNumbersArray) {
       if (element === numberToLookFor) {
